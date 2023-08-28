@@ -1,9 +1,9 @@
 ---
-- name: DEPLOYMENT ON EKS
+- name: DEPLOYMENT ON AKS
   hosts: kubernetes
   remote_user: root
   tasks:  
-    - name: CREATE PLAYBOOKS DIR ON EKS CLUSTER
+    - name: CREATE PLAYBOOKS DIR ON AKS CLUSTER
       file:
         path: /opt/playbooks/
         state: directory
