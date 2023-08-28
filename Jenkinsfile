@@ -1,7 +1,7 @@
 pipeline {
     agent any
-    environment {
-      PATH = "$PATH:/opt/apache-maven-3.9.1/bin"
+    tools {
+       maven "MAVEN_HOME"
     }
     
     stages {
@@ -14,10 +14,9 @@ pipeline {
 
         stage('CODE CHECKOUT') {
             steps {
-                git 'https://github.com/sunnydevops2022/devops_real_time_project_1.git'
+                git 'https://github.com/pratham1951/DevOps-Realtime-Project.git'
             }
         }
-        
         stage('MODIFIED IMAGE TAG') {
             steps {
                 sh '''
@@ -31,18 +30,6 @@ pipeline {
         stage('BUILD') {
             steps {
                 sh 'mvn clean install package'
-            }
-        } 
-        
-        stage('SONAR SCANNER') {
-            environment {
-            sonar_token = credentials('SONAR_TOKEN')
-            }
-            steps {
-                sh 'mvn sonar:sonar -Dsonar.projectName=$JOB_NAME \
-                    -Dsonar.projectKey=$JOB_NAME \
-                    -Dsonar.host.url=http://172.31.84.238:9000 \
-                    -Dsonar.token=$sonar_token'
             }
         } 
         
@@ -66,12 +53,11 @@ pipeline {
             }
         }
         
-        stage('DEPLOYMENT ON EKS') {
+         stage('DEPLOYMENT ON AKS') {
             steps {
-                sh 'ansible-playbook playbooks/create_pod_on_eks.yml \
+                sh 'ansible-playbook playbooks/create_pod_on_aks.yml \
                     --extra-vars "JOB_NAME=$JOB_NAME"'
             }            
         }          
-
     }
-}      
+}    
